@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.24.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.23.0...sicap-v0.24.0) (2026-09-24)
+
+
+### Features
+
+* **rate-limit:** enhance rate limiting with per-minute and per-day limits ([4e49af7](https://github.com/ciocan/SICAP.ai/commit/4e49af706c3049ec8ee9efeee1f5cd0360ab22c4))
+
 ## [0.23.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.22.0...sicap-v0.23.0) (2026-09-04)
 
 
