@@ -60,7 +60,7 @@ The dataset discriminator is the slug `licitatii | achizitii | achizitii-offline
 
 ### Rate limiting & telemetry
 
-`enforceRateLimit(userId)` (`lib/mcp/rate-limit.ts`) is an atomic fixed-window limiter (60 calls/min/user) on `mcp_rate_limit` via `INSERT ... ON CONFLICT DO UPDATE ... RETURNING`. Better Auth's own limiter can't see MCP-adapter traffic, so tools enforce this directly. Each call logs an Axiom `mcp.tool` event with `userId`, `tool`, args (incl. query text), `latencyMs`, and `status` (`ok` / `rate_limited` / `error`).
+`enforceRateLimit(userId)` (`lib/mcp/rate-limit.ts`) is an atomic fixed-window limiter with two windows per user, 60 calls/min and 500 calls/UTC day, on `mcp_rate_limit` via `INSERT ... ON CONFLICT DO UPDATE ... RETURNING`. The two upserts go out in one `db.batch`; the minute row is keyed `${userId}:${minute}`, the day row `${userId}:d:${day}`. The day limit is checked first so an agent that has burned its daily budget gets the "încearcă din nou mâine" message rather than a "încetinește ritmul" one. Both messages are in Romanian and point to https://api.sicap.ai/ for higher limits. Limits are constants in that file; change them there. Better Auth's own limiter can't see MCP-adapter traffic, so tools enforce this directly. Each call logs an Axiom `mcp.tool` event with `userId`, `tool`, args (incl. query text), `latencyMs`, and `status` (`ok` / `rate_limited` / `error`).
 
 ### Gotchas
 
