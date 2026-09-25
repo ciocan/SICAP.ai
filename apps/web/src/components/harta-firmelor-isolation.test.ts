@@ -23,6 +23,7 @@ import { describe, expect, it } from "vitest";
 
 const SRC = path.resolve(__dirname, "..");
 const CARD = "harta-firmelor-card";
+const LINK_FILE = "harta-firmelor-link.tsx";
 
 function sourceFiles(dir: string): string[] {
   const out: string[] = [];
@@ -276,9 +277,55 @@ describe("the height listener's origin and source checks are pinned in its sourc
     expect(card, "the iframe src must be built from the embed origin").toMatch(
       /src=\{hartaFirmelorEmbedUrl\(/,
     );
-    expect(card, "the anchor href must be built from the site origin").toMatch(
+    expect(card, "the card must render the shared anchor strip").toContain("<HartaFirmelorLink");
+    const link = read(path.join(SRC, "components", LINK_FILE));
+    expect(link, "the anchor href must be built from the site origin").toMatch(
       /href=\{hartaFirmelorCompanyUrl\(/,
     );
+  });
+});
+
+/**
+ * The anchors exist to pass link equity to harta-firmelor.ro (issue #82). Two
+ * things would silently undo that: a `nofollow` or `sponsored` rel, and the
+ * anchor dropping off the older `/achizitii/firma/[id]` page, which is the one
+ * the sitemap advertises and search engines rank. Both are greps over source
+ * text, so they only say the code still spells it that way.
+ */
+describe("the outbound anchors to harta-firmelor.ro count", () => {
+  const link = () => read(path.join(SRC, "components", LINK_FILE));
+  const footer = () => read(path.join(SRC, "components", "footer.tsx"));
+
+  it("is rendered by both firm pages, the framed card and the older contract list", () => {
+    const renders = files.filter((f) => read(f).includes("<HartaFirmelorLink")).map(rel);
+    expect(renders.sort()).toEqual([
+      "components/company-achizitii.tsx",
+      "components/harta-firmelor-card.tsx",
+    ]);
+  });
+
+  it("on the older page, only for the firm slug, never for an authority or a cpv", () => {
+    const page = read(path.join(SRC, "components", "company-achizitii.tsx"));
+    expect(page).toMatch(/slug === "firma" &&[^(]*\(\s*<div[^>]*>[\s\S]*?<HartaFirmelorLink/);
+  });
+
+  it("on the older page, is fed the supplier's CUI, not the route id", () => {
+    // /achizitii/firma/[id] takes e-licitatie's supplier entityId (41221 for
+    // CUI 2864518). Handing that to the anchor would link a different company.
+    const page = read(path.join(SRC, "components", "company-achizitii.tsx"));
+    expect(page).toMatch(/<HartaFirmelorLink nationalId=\{supplier\.numericFiscalNumber\} \/>/);
+    expect(page).toMatch(/href=\{`\/firma\/\$\{supplier\.numericFiscalNumber\}`\}/);
+    expect(page).not.toMatch(/<HartaFirmelorLink nationalId=\{id\}/);
+  });
+
+  it("the footer links the harta home through the shared origin constant", () => {
+    expect(footer()).toMatch(/href=\{HARTA_FIRMELOR_ORIGIN\}/);
+  });
+
+  it("carries neither nofollow nor sponsored", () => {
+    for (const source of [link(), footer()]) {
+      expect(source).not.toMatch(/rel="[^"]*(nofollow|sponsored)/);
+    }
   });
 });
 

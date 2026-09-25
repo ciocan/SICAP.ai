@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
+import { ArrowRight } from "lucide-react";
 
 import { getCachedCompanyAchizitii } from "@/lib/cached-queries";
 
@@ -11,6 +13,7 @@ import { Pagination } from "./pagination";
 import { Chart } from "./chart";
 import { PerPage } from "./per-page";
 import { CSVDownload } from "./csv-download";
+import { HartaFirmelorLink } from "./harta-firmelor-link";
 
 interface CompanyAchizitiiProps {
   id: string;
@@ -58,6 +61,22 @@ export async function CompanyAchizitii({ id, slug, searchParams }: CompanyAchizi
           <span className="font-mono">{totalValueEur}</span>
         </p>
       </div>
+      {slug === "firma" && supplier.numericFiscalNumber && (
+        <div className="space-y-3">
+          {/* The older firm page is the one search engines rank. Send them, and
+              their readers, to the full profile and to harta-firmelor.ro. The
+              route id here is e-licitatie's supplier entityId, not the CUI, so
+              both links are built from the supplier record instead. */}
+          <Link
+            href={`/firma/${supplier.numericFiscalNumber}`}
+            className="group inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+          >
+            Vezi profilul complet al firmei
+            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+          <HartaFirmelorLink nationalId={supplier.numericFiscalNumber} />
+        </div>
+      )}
       <Chart stats={stats} />
       <div className="space-y-4">
         <div className="flex justify-between items-center">
