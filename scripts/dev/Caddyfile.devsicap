@@ -1,0 +1,14 @@
+# SICAP.ai web dev on the devsicap box: `pnpm dev` listens on 127.0.0.1:3042
+# only, Caddy serves it over https on the tailnet IP (same port, different
+# address). Certificate comes from Caddy's internal CA; its root.crt must be
+# trusted on the machine opening the browser.
+#
+# Install once:
+#   sudo tee -a /etc/caddy/Caddyfile < scripts/dev/Caddyfile.devsicap
+#   sudo caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+#   sudo systemctl reload caddy
+https://devsicap:3042, https://devsicap.ts.sicap.ai:3042 {
+	bind 100.77.15.4
+	tls internal
+	reverse_proxy 127.0.0.1:3042
+}
