@@ -11,6 +11,7 @@ SICAP.ai is a search engine for Romanian public procurement data (from e-licitat
 ```bash
 # Development
 pnpm dev              # Start dev server (port 3042)
+                      # binds 127.0.0.1 only; https://devsicap:3042 via Caddy, see scripts/dev/Caddyfile.devsicap
 pnpm db:dev           # Start local Turso DB server
 
 # Build & Production
@@ -94,6 +95,10 @@ Elasticsearch queries in `packages/api/src/`:
 - `get-company.ts` - Company aggregations
 - `get-authority.ts` - Authority queries
 - `get-total.ts` - Index totals
+
+### harta-firmelor.ro links
+
+Firm pages, the footer and `/despre` carry plain anchors to harta-firmelor.ro (the owner's sister site). The anchor is `components/harta-firmelor-link.tsx`, gated by `isEmbeddableCui`, never `nofollow`. Rules and the isolation test: `docs/architecture.md`.
 
 ### MCP Server
 

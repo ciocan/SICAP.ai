@@ -38,6 +38,10 @@ const nextConfig: NextConfig = {
 		},
 	},
 	reactStrictMode: false,
+	// Dev only. Caddy serves the dev server over https on the tailnet (see
+	// scripts/dev/Caddyfile.devsicap); without this Next blocks its HMR and
+	// /_next requests as cross-origin.
+	allowedDevOrigins: ["devsicap", "devsicap.ts.sicap.ai"],
 	pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
 	experimental: {
 		mdxRs: {

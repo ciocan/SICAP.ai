@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port=3042",
+    "dev": "next dev --port=3042 --hostname 127.0.0.1",
     "build": "next build",
     "postbuild": "next-sitemap",
     "sitemap": "next-sitemap",

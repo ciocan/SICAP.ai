@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { headers } from "next/headers";
-import { Github, Terminal, Code2, Bot } from "lucide-react";
+import { Github, Terminal, Code2, Bot, ArrowUpRight } from "lucide-react";
 
 import { StatusWidget } from "./openstatus";
 import { DarkMode } from "./dark-mode";
 import { HostingLink } from "./hosting-link";
+import { HARTA_FIRMELOR_ORIGIN } from "@/lib/harta-firmelor";
 
 export async function Footer() {
   await headers(); // Required before using new Date() in Next.js Server Components
@@ -47,6 +48,20 @@ export async function Footer() {
                 >
                   Confidentialitate
                 </Link>
+              </li>
+            </ul>
+            {/* External, kept apart from the site's own pages. */}
+            <ul className="mt-3 border-t border-border/40 pt-3 text-sm">
+              <li>
+                <a
+                  href={HARTA_FIRMELOR_ORIGIN}
+                  target="_blank"
+                  rel="noopener"
+                  className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Harta firmelor
+                  <ArrowUpRight className="size-3.5" aria-hidden="true" />
+                </a>
               </li>
             </ul>
           </div>

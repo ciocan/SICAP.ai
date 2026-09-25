@@ -68,3 +68,14 @@ The dataset discriminator is the slug `licitatii | achizitii | achizitii-offline
 - **`mcp-handler`, not `@vercel/mcp-adapter`:** the latter is now a deprecated empty stub; the live package is `mcp-handler` (same `createMcpHandler` API).
 - **tsc OOM:** the MCP SDK's generic `server.tool()` overloads trigger TS2589 ("type instantiation excessively deep") and exhaust tsc's heap. The route registers tools through a minimal local `McpToolServer` interface (generic over the handler's `Args`) so the compiler skips that inference; Zod still validates inputs at runtime.
 - **Migrations:** `0001_woozy_mauler.sql` (the OAuth + rate-limit tables) must be applied with `pnpm db:migrate` against the target database. It is additive only.
+
+## harta-firmelor.ro links
+
+sicap.ai and [harta-firmelor.ro](https://harta-firmelor.ro) share an owner and the ONRC data. sicap links out to harta on purpose, with plain anchors that carry link equity (issue #82, harta#1176). The rules:
+
+- `apps/web/src/lib/harta-firmelor.ts` owns the origin and the URL builders. `isEmbeddableCui` gates everything: a bare 4 to 10 digit CUI gets a link, anything else (consortium ids, legacy ids) gets nothing, because harta answers 404 for those.
+- `components/harta-firmelor-link.tsx` is the one anchor to `https://harta-firmelor.ro/firma/<cui>`, rendered in server HTML. `rel="noopener"` only. Never add `nofollow` or `sponsored`.
+- Both firm pages render it. `/firma/[nationalId]` gets it under the framed card (`harta-firmelor-card.tsx`), and `/achizitii/firma/[id]` (`company-achizitii.tsx`, the URL the sitemap advertises and search engines rank) gets it without the frame, plus a link to `/firma/<cui>`. That route's `[id]` is e-licitatie's supplier entityId, not a CUI, so both links come from `supplier.numericFiscalNumber` in the query result.
+- The framed card loads harta's `/embed/.../bare` variant, which harta serves `noindex, nofollow`. That is why the anchor lives outside the frame. The card stays on the company page only; `harta-firmelor-isolation.test.ts` greps the import graph and the JSX to keep it off the authority page and pins the anchor rules above.
+- The footer links the harta home through `HARTA_FIRMELOR_ORIGIN`, and `/despre` carries one sentence with the same link.
+- No link to harta's `/adresa/...` pages yet: that URL ends in harta's `address_key`, which sicap's ONRC index does not carry.
