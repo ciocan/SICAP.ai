@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.25.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.24.0...sicap-v0.25.0) (2026-09-25)
+
+
+### Features
+
+* **footer:** set the harta-firmelor.ro link apart as an external link ([5ab2c27](https://github.com/ciocan/SICAP.ai/commit/5ab2c273cc11bf8302b5a6ad099bd02b4b130a23))
+* **seo:** real links from every firm page and the footer to harta-firmelor.ro ([2c6b196](https://github.com/ciocan/SICAP.ai/commit/2c6b196e18247fdb07250884c9d088ed017ba69c))
+* **seo:** real links from every firm page and the footer to harta-firmelor.ro ([4a22e39](https://github.com/ciocan/SICAP.ai/commit/4a22e39bcae729372a07383844fce3f2db014a3b))
+
 ## [0.24.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.23.0...sicap-v0.24.0) (2026-09-24)
 
 
