@@ -1,3 +1,5 @@
+
+
 # SICAP.ai
 
 ## Sistem Inteligent de Căutare Achiziții Publice
@@ -190,6 +192,9 @@ pnpm db:migrate
 
 # Interfață vizuală pentru DB
 pnpm db:studio
+
+# Curăță fișierele DB locale
+pnpm db:dev:clean
 ```
 
 ### Curățare cache și dependențe
